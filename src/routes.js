@@ -1,6 +1,5 @@
 const {Router: router} = require('express');
 const { public, user } = require('./controller');
-const jwt = require('jsonwebtoken');
 
 const routes = router();
 

@@ -1,5 +1,7 @@
 const { User } = require('../model');
+const { secret } = require('../globalVaribles');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 function home(request, response) {
@@ -49,7 +51,12 @@ async function login(request, response) {
             throw data;
         }
 
+        const token = jwt.sign({
+            id: user._id
+        }, secret);
+
         const data = {
+            token,
             message: 'Usuário logado com sucesso.',
             status: 200
         };
