@@ -1,11 +1,15 @@
 const {Router: router} = require('express');
-const { public } = require('./controller');
-const bcrypt = require('bcrypt');
+const { public, user } = require('./controller');
 const jwt = require('jsonwebtoken');
 
 const routes = router();
 
+// Routes public
 routes.get('/', public.home);
+routes.post('/', public.login);
+
+// Routes User
+routes.post('/user', user.create);
 
 module.exports = {
     routes

@@ -1,15 +1,16 @@
 const { User } = require('../model');
 const bcrypt = require('bcrypt');
 
-
-function home(request, response) {
-    return response.send('<h1>Seja bem vindo a minha API</h1>');
-}
-
-async function login(request, response) {
+async function create(request, response) {
     try {
-        const {email, password} = request.body;
+        const {name, email, password, confirmpassword} = request.body;
+
         const validation = [
+            { 
+                isError: !name,
+                message: 'É necessário adicionar o nome',
+                status: 422
+            },
             { 
                 isError: !email,
                 message: 'É necessário adicionar o e-mail',
@@ -18,6 +19,16 @@ async function login(request, response) {
             { 
                 isError: !password,
                 message: 'É necessário adicionar a senha',
+                status: 422
+            },
+            { 
+                isError: !confirmpassword,
+                message: 'É necessário adicionar a confirmação da senha',
+                status: 422
+            },
+            {
+                isError: password !== confirmpassword,
+                message: 'A senha está de confirmação está errada',
                 status: 422
             }
         ];
@@ -31,27 +42,30 @@ async function login(request, response) {
             throw data;
         }
 
-        const user = await User.findOne({ email });
-        if (!user) {
+        const isExtistUser = await User.findOne({ email });
+        
+        if (isExtistUser) {
             const data = {
-                message: 'usuário não existe ou senha inválida',
+                message: 'Não é possível cadastrar, o e-mail já está cadastrado.',
                 status: 422
             };
             throw data;
         }
 
-        const checkPassword = await bcrypt.compare(password, user.password);
-        if (!checkPassword) {
-            const data = {
-                message: 'usuário não existe ou senha inválida',
-                status: 422
-            };
-            throw data;
+        const salt = await bcrypt.genSalt(12);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const user = {
+            name,
+            email,
+            password: passwordHash
         }
+
+        await User.create(user);
 
         const data = {
-            message: 'Usuário logado com sucesso.',
-            status: 200
+            message: 'Usuário cadastrado com sucesso.',
+            status: 201
         };
         return response
             .status(data.status)
@@ -68,6 +82,5 @@ async function login(request, response) {
 }
 
 module.exports = {
-    home,
-    login
+    create
 };
