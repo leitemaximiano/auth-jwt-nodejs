@@ -1,0 +1,7 @@
+{
+  "name": "auth-jwt-nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Maximiano Leite <macio.pb.cg@gmail.com>",
+  "license": "MIT"
+}
