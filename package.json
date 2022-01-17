@@ -1,9 +1,13 @@
 {
   "name": "auth-jwt-nodejs",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.js",
   "author": "Maximiano Leite <macio.pb.cg@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon . localhost 3000"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "dotenv": "^13.0.1",
