@@ -81,6 +81,41 @@ async function create(request, response) {
     }
 }
 
+async function getOne(request, response) {
+    try {
+        const { id: _id } = request.params;
+        if (!_id) {
+            const data = {
+                message: 'É necessário passar o id',
+                status: 422
+            };
+            throw data;
+        }
+        
+        const user = await User.findById(_id, '-password');
+        if(!user) {
+            const data = {
+                message: 'Não foi localizado nenhum usuário',
+                status: 422
+            };
+            throw data;
+        }
+
+        return response
+            .status(200)
+            .json(user);
+    } catch (error) {
+        const data = {
+            message: error.message,
+            status: error.status || 500
+        }
+        return response
+            .status(data.status)
+            .json(data);
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getOne
 };
